@@ -135,7 +135,7 @@ public:
       auto test(this->head->next);
       delete this->head;
       this->head = nullptr;
-      if (test != tail) {
+      if (test != this->tail) {
         this->head = this->head->next;
         this->head->prev = tail;
       }
