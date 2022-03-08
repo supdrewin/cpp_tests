@@ -13,7 +13,7 @@ void assert_ne(T left, T right) {
     throw "failed";
 }
 
-template <typename T> //
+template <typename T = void()> //
 struct Test {
   Test(T func, const char *name) //
       : name(name), run(func) {}
@@ -21,13 +21,15 @@ struct Test {
   T *run;
 };
 
-template <typename T = void()> //
 class Tests {
 public:
   Tests() : tests() {}
 
-  void add(T func, const char *name) { tests.push_back({func, name}); }
-  void add(Test<T> test) { tests.push_back(test); }
+  void add(Test<> test) { tests.push_back(test); }
+
+  template <typename T = void()> void add(T func, const char *name) {
+    tests.push_back({func, name});
+  }
 
   int run() {
     printf("running %zu tests\n", tests.size());
@@ -35,8 +37,8 @@ public:
       printf("test %s ... ", test.name);
       try {
         test.run();
-      } catch (const char *str) {
-        printf("%s\n", str);
+      } catch (const char *err) {
+        printf("%s\n", err);
         return 1;
       }
       printf("ok\n");
@@ -45,5 +47,5 @@ public:
   }
 
 private:
-  std::list<Test<T>> tests;
+  std::list<Test<>> tests;
 };
